@@ -35,6 +35,7 @@ def compound_annual_return(monthly_returns):
 
 
 # Step 2
+def simulate
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
 
