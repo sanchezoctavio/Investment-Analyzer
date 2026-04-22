@@ -89,6 +89,16 @@ def analyze_results(all_paths, target_goal):
 
         year_bands.append({"year": year + 1, "p10": p10, "p50": p50, "p90": p90})
 
+    # Count how many simulations reached the target goal by the final year
+    final_values = [all_paths[sim][-1] for sim in range(num_simulations)]
+    success_count = 0
+    for value in final_values:
+        if value >= target_goal:
+            success_count += 1
+    probability = round(success_count / num_simulations * 100, 1)
+
+    return {"year_bands": year_bands, "probability_of_success": probability}
+
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
 
