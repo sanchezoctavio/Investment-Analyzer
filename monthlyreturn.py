@@ -133,6 +133,16 @@ def run_tests():
     assert len(all_paths) == 1000
     assert len(all_paths[0]) == 30
 
+    # Step 4 tests
+    results = analyze_results(all_paths, 1000000)
+    # should be one band per year
+    assert len(results["year_bands"]) == 30
+    # p10 should be less than p50, which should be less than p90 for each year
+    for band in results["year_bands"]:
+        assert band["p10"] < band["p50"] < band["p90"]
+    # probability of success should be between 0 and 100
+    assert 0 <= results["probability_of_success"] <= 100
+
     print("All tests passed")
 
 # Demo function to show how the monthly returns compound into an annual return
@@ -165,6 +175,14 @@ def demo():
     print(f"Lowest final value: ${min(final_values):,.2f}")
     print(f"Highest final value: ${max(final_values):,.2f}")
 
+    # Step 4 demo
+    print("\nPercentil bands by year ($1,000,000 target goal)")
+    results = analyze_results(all_paths, 1000000)
+    print(f" {'Year':>4} | {'Pessimistic (p10)':>18} | {'Median (p50)':>14} | {'Optimistic (p90)':>16}")
+    print(f" {'-'*58}")
+    for band in results["year_bands"]:
+        print(f" {band['year']:>4} | ${band['p10']:>17,.0f} | ${band['p50']:>13,.0f} | ${band['p90']:>15,.0f}")
+    print(f"\nProbability of reaching $1,000,000 in 30 years: {results['probability_of_success']}%")
 
 if __name__ == "__main__":
     run_tests()
