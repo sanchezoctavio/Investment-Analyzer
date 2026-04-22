@@ -46,10 +46,10 @@ def simulate_portfolio(initial_value, monthly_contribution, years):
     for year in range(years):
         # Simulate 12 months for this year
         for month in draw_year_of_returns():
-            portfolio = portfolio_value * (1 + month) + monthly_contribution
+            portfolio_value = portfolio_value * (1 + month) + monthly_contribution
 
         # Snapshot the portfolio value at the end of the year
-        yearly_values.append(round(portfolio, 2))
+        yearly_values.append(round(portfolio_value, 2))
 
     return yearly_values
 
@@ -100,7 +100,7 @@ def demo():
         print(f"Year {i}: " + "  ".join(f"{r*100:+.1f}%" for r in months))
         print(f"        Annual Return: {annual*100:+.1f}%\n")
 
-    # Step 2 demo 
+    # Step 2 demo
     # Show a full portfolio simulation over 10 years
     print("One portfolio simulation ($10,000 start, $500/month, 10 years)")
     random.seed(99)
