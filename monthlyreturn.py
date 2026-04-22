@@ -104,6 +104,13 @@ def demo():
         print(f"Year {i}: " + "  ".join(f"{r*100:+.1f}%" for r in months))
         print(f"        Annual Return: {annual*100:+.1f}%\n")
 
+    # Show a full portfolio simulation over 10 years
+    print("One portfolio simulation ($10,000 start, $500/month, 10 years)")
+    random.seed(99)
+    path = simulate_portfolio(10000, 500, 10)
+    for i, value in enumerate(path):
+        print(f"Year {i+1:>2}: ${value:,.2f}")
+
 
 if __name__ == "__main__":
     run_tests()
