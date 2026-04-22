@@ -20,6 +20,8 @@ Built on Step 1 by adding simulate_portfolio, a function that takes a starting d
 Citations
 
 We used Claude to assist at certain points in this project, primarily for explanations and debugging help.
-We used Claude to help explain certain Python concepts we weren't familiar with, such as how random.gauss works and why standard deviation scales by the square root of 12 when converting from annual to monthly. I also consulted it when deciding how to structure the test assertions.
+We used Claude to help explain certain Python concepts we weren't familiar with, such as how random.gauss works. We also used AI to find out how to structure the test assertions.
+
 Debugging
-When my code threw an AssertionError on the portfolio test, I used Claude to help identify the cause. It pointed out that the assertion was testing something dependent on random market performance, and I updated it to assert path[-1] > 0 instead.
+
+When the code threw an AssertionError on the portfolio test, we used AI to help identify the cause. It pointed out that the assertion was testing something dependent on random market performance, and found out we had to update it to assert path[-1] > 0 instead.
