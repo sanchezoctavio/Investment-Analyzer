@@ -59,7 +59,7 @@ def simulate_portfolio(initial_value, monthly_contribution, years):
 
 def run_tests():
     # random.seed is used to ensure that the same sequence of random numbers is generated each time we run the tests,
-    random.seed(1)
+    random.seed(42)
     samples = [draw_monthly_return() for _ in range(100000)]
     # debugging tool used to verify that a condition is True during program execution
     # confirms that a year actually produces 12 monthly returns and not some other number.
