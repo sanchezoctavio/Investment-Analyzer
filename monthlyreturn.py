@@ -82,7 +82,10 @@ def run_tests():
     # portfolio should grow over time, so the final value should be higher than the initial value
     # initial + contributions
     total_contributed = 10000 + 500 * 12 * 30
+    # shows that even a poor simulation should yield a final portfolio value that is
+    # at least 50% of the total contributed amount, which would be a very bad return over 30 years
     assert path[-1] > total_contributed * 0.5
+    
     print("All tests passed")
 
 # Demo function to show how the monthly returns compound into an annual return
