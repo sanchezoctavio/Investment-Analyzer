@@ -53,6 +53,18 @@ def simulate_portfolio(initial_value, monthly_contribution, years):
 
     return yearly_values
 
+# Step 3
+def run_simulations(initial_value, monthly_contribution, years, num_simulations):
+    # Run portfolio simulation multiple times to see a range of possible outcomes
+    # Each run will produce a different path due to randomness, so we can analyze the distribution of final values
+    # Return list where each row is one simulation's yearly values
+    all_paths = []
+
+    for _ in range(num_simulations):
+        path = simulate_portfolio(initial_value, monthly_contribution, years)
+        all_paths.append(path)
+
+    return all_paths
 
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
@@ -79,9 +91,14 @@ def run_tests():
     # simulate_portfolio should return one value per year
     path = simulate_portfolio(10000, 500, 30)
     assert len(path) == 30
-
     # Final portfolio value should be positive
     assert path[-1] > 0
+
+    # Step 3 tests
+    all_paths = run_simulations(10000, 500, 30, 1000)
+    # We should have 1000 simulations, each with 30 yearly values
+    assert len(all_paths) == 1000
+    assert len(all_paths[0]) == 30
 
     print("All tests passed")
 
@@ -107,6 +124,13 @@ def demo():
     path = simulate_portfolio(10000, 500, 10)
     for i, value in enumerate(path):
         print(f"Year {i+1:>2}: ${value:>12,.2f}")
+
+    # Step 3 demo
+    print("\nRunning 1,000 simulations ($10,000 start, $500/month, 30 years)")
+    all_paths = run_simulations(10000, 500, 30, 1000)
+    final_values = [path[-1] for path in all_paths]
+    print(f"Lowest final value: ${min(final_values):>12,.2f}")
+    print(f"Highest final value: ${max(final_values):>12,.2f}")
 
 
 if __name__ == "__main__":
