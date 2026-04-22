@@ -76,7 +76,13 @@ def run_tests():
     assert abs(sample_mean - monthly_mean) < 0.001
 
     # simulate_portfolio should return one value per year
-    path = simulate_
+    path = simulate_portfolio(10000, 500, 30)
+    assert len(path) == 30
+
+    # portfolio should grow over time, so the final value should be higher than the initial value
+    # initial + contributions
+    total_contributed = 10000 + 500 * 12 * 30
+    assert path[-1] > total_contributed * 0.5
     print("All tests passed")
 
 # Demo function to show how the monthly returns compound into an annual return
