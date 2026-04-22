@@ -56,7 +56,8 @@ def simulate_portfolio(initial_value, monthly_contribution, years):
 # Step 3
 def run_simulations(initial_value, monthly_contribution, years, num_simulations):
     # Run portfolio simulation multiple times to see a range of possible outcomes
-    # Each run will produce a different path due to randomness, so we can analyze the distribution of final values
+    # Each run will produce a different path due to randomness,
+    # so we can analyze the distribution of final values
     # Return list where each row is one simulation's yearly values
     all_paths = []
 
@@ -161,20 +162,25 @@ def demo():
         print(f"        Annual Return: {annual*100:+.1f}%\n")
 
     # Step 5 User input
-    print("Enter your own portfolio investment details:")
+    print("Enter your own portfolio investment details")
     initial_value = float(input("Starting portfolio value: $"))
     monthly_contribution = float(input("Monthly contribution: $"))
     years = int(input("Number of years to simulate: "))
     target_goal = float(input("Target goal: $"))
 
-    
-    # Step 2 demo
-    # Show a full portfolio simulation over 10 years
-    print("One portfolio simulation ($10,000 start, $500/month, 10 years)")
-    random.seed(99)
-    path = simulate_portfolio(10000, 500, 10)
+    print(f"One portfolio simulation (${initial_value:,.0f} start, ${monthly_contribution:,.0f}/month, {years} years)")
+    path = simulate_portfolio(initial_value, monthly_contribution, years)
     for i, value in enumerate(path):
         print(f"Year {i+1:>2}: ${value:>12,.2f}")
+
+
+    # Step 2 demo
+    # Show a full portfolio simulation over 10 years
+    #print("One portfolio simulation ($10,000 start, $500/month, 10 years)")
+    #random.seed(99)
+    #path = simulate_portfolio(10000, 500, 10)
+    #for i, value in enumerate(path):
+        #print(f"Year {i+1:>2}: ${value:>12,.2f}")
 
     # Step 3 demo
     print("\nRunning 1,000 simulations ($10,000 start, $500/month, 30 years)")
