@@ -191,7 +191,7 @@ def demo():
     print(f"Lowest final value: ${min(final_values):,.2f}")
     print(f"Highest final value: ${max(final_values):,.2f}")
 
-    # Step 4 demo
+    # Step 4/5 demo
     print("\nPercentile bands by year ($1,000,000 target goal)")
     results = analyze_results(all_paths, 1000000)
     print(f" {'Year':>4} | {'Pessimistic (p10)':>18} | {'Median (p50)':>14} | {'Optimistic (p90)':>16}")
