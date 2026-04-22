@@ -192,13 +192,16 @@ def demo():
     print(f"Highest final value: ${max(final_values):,.2f}")
 
     # Step 4/5 demo
-    print("\nPercentile bands by year ($1,000,000 target goal)")
-    results = analyze_results(all_paths, 1000000)
+    print(f"\nPercentile bands by year (${target_goal:,.0f} target goal)")
+    #print("\nPercentile bands by year ($1,000,000 target goal)")
+    results = analyze_results(all_paths, target_goal)
+    #results = analyze_results(all_paths, 1000000)
     print(f" {'Year':>4} | {'Pessimistic (p10)':>18} | {'Median (p50)':>14} | {'Optimistic (p90)':>16}")
     print(f" {'-'*58}")
     for band in results["year_bands"]:
         print(f" {band['year']:>4} | ${band['p10']:>17,.0f} | ${band['p50']:>13,.0f} | ${band['p90']:>15,.0f}")
-    print(f"\nProbability of reaching $1,000,000 in 30 years: {results['probability_of_success']}%")
+    print(f"\nProbability of reaching ${target_goal:,.0f} in {years} years: {results['probability_of_success']}%")
+    #print(f"\nProbability of reaching $1,000,000 in 30 years: {results['probability_of_success']}%")
 
 if __name__ == "__main__":
     run_tests()
