@@ -24,8 +24,11 @@ Run the main script:
 
    python3 monthlyreturn.py
 This will run the tests to verify everything is working, then print a demo showing 3 example years of random monthly returns and a 10-year portfolio simulation.
+
 Project Steps
+
 Step 1 — Algorithm Sketch
 Designed the core Monte Carlo simulation algorithm. The key idea is that instead of assuming a fixed annual return, each month gets a random return drawn from a bell curve based on S&P 500 historical averages. Running 1,000 of these simulated futures and sorting the results produces a realistic range of outcomes — showing the pessimistic, median, and optimistic portfolio values over time, along with the probability of hitting a target goal.
+
 Step 2 — Initial Implementation
 Wrote and tested the foundational functions in Python using only the random module. This includes drawing a single random monthly return, compounding 12 months into an annual return, and simulating a full portfolio path over any number of years by growing the portfolio each month and recording yearly snapshots. All functions are verified with assertions to confirm correct output size, realistic return ranges, and statistical accuracy.
