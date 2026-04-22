@@ -70,9 +70,24 @@ def run_simulations(initial_value, monthly_contribution, years, num_simulations)
 # Analyze the distribution of final portfolio values from our simulations,
 # looking at metrics like the median, 10th percentile, and 90th percentile
 # to understand the range of outcomes
-# Count 
+# Count how many simulations reached target goal by final year
+def analyze_results(all_paths, target_goal):
+    num_simulations = len(all_paths)
+    num_years = len(all_paths[0])
+    year_bands = []
 
+    for year in range(num_years):
+        # Collect the portfolio values for this year across all simulations
+        column = [all_paths[sim][year] for sim in range(num_simulations)]
+        # sort column so it can be indexed to find percentiles
+        column.sort()
 
+        # indnex into sorted list to get the 10th, 50th (median), and 90th percentiles
+        p10 = column[int(num_simulations * 0.10)]
+        p50 = column[int(num_simulations * 0.50)]
+        p90 = column[int(num_simulations * 0.90)]
+
+        year_bands.append({"year": year + 1, "p10": p10, "p50": p50, "p90": p90})
 
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
