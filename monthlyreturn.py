@@ -35,7 +35,25 @@ def compound_annual_return(monthly_returns):
 
 
 # Step 2
-def simulate
+def simulate_portfolio(initial_value, monthly_contribution, years):
+    # Simulate one possible portfolio path over a given number of years
+    # Each month, grow the portfolio by a random return, then add the contribution
+    # Record the portfolio value at the end of each year
+    # Return a list of the portfolio value at the end of each year
+    portfolio_value = initial_value
+    yearly_values = []
+
+    for year in range(years):
+        # Simulate 12 months for this year
+        for month in draw_year_of_returns():
+            portfolio = portfolio_value * (1 + month) + monthly_contribution
+
+        # Snapshot the portfolio value at the end of the year
+        yearly_values.append(round(portfolio, 2))
+
+    return yearly_values
+
+
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
 
