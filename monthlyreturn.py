@@ -109,7 +109,7 @@ def demo():
     random.seed(99)
     path = simulate_portfolio(10000, 500, 10)
     for i, value in enumerate(path):
-        print(f"Year {i+1:>2}: ${value:,.2f}")
+        print(f"Year {i+1:>2}: ${value:>12,.2f}")
 
 
 if __name__ == "__main__":
