@@ -129,8 +129,8 @@ def demo():
     print("\nRunning 1,000 simulations ($10,000 start, $500/month, 30 years)")
     all_paths = run_simulations(10000, 500, 30, 1000)
     final_values = [path[-1] for path in all_paths]
-    print(f"Lowest final value: ${min(final_values):>12,.2f}")
-    print(f"Highest final value: ${max(final_values):>12,.2f}")
+    print(f"Lowest final value: ${min(final_values):,.2f}")
+    print(f"Highest final value: ${max(final_values):,.2f}")
 
 
 if __name__ == "__main__":
