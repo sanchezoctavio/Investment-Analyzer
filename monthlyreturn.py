@@ -66,6 +66,14 @@ def run_simulations(initial_value, monthly_contribution, years, num_simulations)
 
     return all_paths
 
+# Step 4
+# Analyze the distribution of final portfolio values from our simulations,
+# looking at metrics like the median, 10th percentile, and 90th percentile
+# to understand the range of outcomes
+# Count 
+
+
+
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
 
