@@ -75,6 +75,7 @@ def run_tests():
     # checks that the average of our 100,000 samples is close to the expected monthly mean
     assert abs(sample_mean - monthly_mean) < 0.001
 
+    # Step 2 tests
     # simulate_portfolio should return one value per year
     path = simulate_portfolio(10000, 500, 30)
     assert len(path) == 30
@@ -85,7 +86,7 @@ def run_tests():
     # shows that even a poor simulation should yield a final portfolio value that is
     # at least 50% of the total contributed amount, which would be a very bad return over 30 years
     assert path[-1] > total_contributed * 0.5
-    
+
     print("All tests passed")
 
 # Demo function to show how the monthly returns compound into an annual return
