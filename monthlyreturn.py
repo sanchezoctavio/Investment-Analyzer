@@ -160,6 +160,14 @@ def demo():
         print(f"Year {i}: " + "  ".join(f"{r*100:+.1f}%" for r in months))
         print(f"        Annual Return: {annual*100:+.1f}%\n")
 
+    # Step 5 User input
+    print("Enter your own portfolio investment details:")
+    initial_value = float(input("Starting portfolio value: $"))
+    monthly_contribution = float(input("Monthly contribution: $"))
+    years = int(input("Number of years to simulate: "))
+    target_goal = float(input("Target goal: $"))
+
+    
     # Step 2 demo
     # Show a full portfolio simulation over 10 years
     print("One portfolio simulation ($10,000 start, $500/month, 10 years)")
