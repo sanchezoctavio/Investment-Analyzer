@@ -34,6 +34,7 @@ def compound_annual_return(monthly_returns):
     return value - 1
 
 
+# Step 2
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
 
