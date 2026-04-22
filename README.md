@@ -17,6 +17,10 @@ Step 2 — Simulating a Full Portfolio
 
 Built on Step 1 by adding simulate_portfolio, a function that takes a starting dollar amount, a monthly contribution, and a number of years, and simulates how the portfolio grows month by month. Each month the portfolio is multiplied by a random return and the contribution is added. The portfolio value is recorded at the end of each year, returning a list of yearly snapshots. Tests confirm the correct number of yearly values are returned and the final value is always positive.
 
+Step 3 — Running 1,000 Simulations
+
+Added run_simulations, a function that calls simulate_portfolio 1,000 times, each with different random returns, and collects all results into a 2D list where each row is one simulation's yearly portfolio values. Tests confirm the grid has exactly 1,000 rows and each row has the correct number of yearly values. The demo prints the lowest and highest final portfolio values across all 1,000 simulations to show the full range of possible outcomes.
+
 Citations
 
 We used Claude to assist at certain points in this project, primarily for explanations and debugging help.
