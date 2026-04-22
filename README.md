@@ -5,7 +5,7 @@ By inputting initial portfolio value, monthly contributions, target financial go
 
 How It Works
 
-Each month of the simulation draws a random market return from a bell curve based on S&P 500 historical averages (10% mean annual return, 15% volatility). Running 1,000 of these simulated futures and analyzing the results produces a realistic range of outcomes — showing pessimistic, median, and optimistic portfolio values over time, along with the probability of hitting a target goal.
+Each month of the simulation draws a random market return from a bell curve based on S&P 500 historical averages (10% mean annual return, 15% volatility). Running 1,000 of these simulated futures and analyzing the results produces a realistic range of outcomes, showing pessimistic, median, and optimistic portfolio values over time, along with the probability of hitting a target goal. Running 1,000 of these simulated futures and analyzing the results produces a realistic range of outcomes.
 
 Project Steps
 
