@@ -182,9 +182,11 @@ def demo():
     #for i, value in enumerate(path):
         #print(f"Year {i+1:>2}: ${value:>12,.2f}")
 
-    # Step 3 demo
-    print("\nRunning 1,000 simulations ($10,000 start, $500/month, 30 years)")
-    all_paths = run_simulations(10000, 500, 30, 1000)
+    # Step 3/5 demo
+    print(f"\nRunning 1,000 simulations (${initial_value:,.0f} start, ${monthly_contribution:,.0f}/month, {years} years))")
+    #print("\nRunning 1,000 simulations ($10,000 start, $500/month, 30 years)")
+    all_paths = run_simulations(initial_value, monthly_contribution, years, 1000)
+    #all_paths = run_simulations(10000, 500, 30, 1000)
     final_values = [path[-1] for path in all_paths]
     print(f"Lowest final value: ${min(final_values):,.2f}")
     print(f"Highest final value: ${max(final_values):,.2f}")
