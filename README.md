@@ -16,3 +16,10 @@ Wrote and tested the first foundational functions: drawing a single random month
 Step 2 — Simulating a Full Portfolio
 
 Built on Step 1 by adding simulate_portfolio, a function that takes a starting dollar amount, a monthly contribution, and a number of years, and simulates how the portfolio grows month by month. Each month the portfolio is multiplied by a random return and the contribution is added. The portfolio value is recorded at the end of each year, returning a list of yearly snapshots. Tests confirm the correct number of yearly values are returned and the final value is always positive.
+
+Citations
+
+We used Claude to assist at certain points in this project, primarily for explanations and debugging help.
+We used Claude to help explain certain Python concepts we weren't familiar with, such as how random.gauss works and why standard deviation scales by the square root of 12 when converting from annual to monthly. I also consulted it when deciding how to structure the test assertions.
+Debugging
+When my code threw an AssertionError on the portfolio test, I used Claude to help identify the cause. It pointed out that the assertion was testing something dependent on random market performance, and I updated it to assert path[-1] > 0 instead.
