@@ -75,6 +75,8 @@ def run_tests():
     # checks that the average of our 100,000 samples is close to the expected monthly mean
     assert abs(sample_mean - monthly_mean) < 0.001
 
+    # simulate_portfolio should return one value per year
+    path = simulate_
     print("All tests passed")
 
 # Demo function to show how the monthly returns compound into an annual return
