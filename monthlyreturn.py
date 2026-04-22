@@ -183,7 +183,7 @@ def demo():
         #print(f"Year {i+1:>2}: ${value:>12,.2f}")
 
     # Step 3/5 demo
-    print(f"\nRunning 1,000 simulations (${initial_value:,.0f} start, ${monthly_contribution:,.0f}/month, {years} years))")
+    print(f"\nRunning 1,000 simulations (${initial_value:,.0f} start, ${monthly_contribution:,.0f}/month, {years} years)")
     #print("\nRunning 1,000 simulations ($10,000 start, $500/month, 30 years)")
     all_paths = run_simulations(initial_value, monthly_contribution, years, 1000)
     #all_paths = run_simulations(10000, 500, 30, 1000)
