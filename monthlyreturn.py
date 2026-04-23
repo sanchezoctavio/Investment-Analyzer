@@ -60,7 +60,7 @@ def simulate_portfolio(initial_value, monthly_contribution, years):
 
 # Step 3
 def run_simulations(initial_value, monthly_contribution, years, num_simulations):
-    # Run portfolio simulation multiple times to see a range of possible outcomes
+    # Run portfolio simulation multigiple times to see a range of possible outcomes
     # Each run will produce a different path due to randomness,
     # so we can analyze the distribution of final values
     # Return list where each row is one simulation's yearly values
@@ -193,6 +193,9 @@ def demo():
     initial_value = float(input("Starting portfolio value: $"))
     monthly_contribution = float(input("Monthly contribution: $"))
     years = int(input("Number of years to simulate: "))
+    while years <= 0 or years > 60:
+        print("Please enter a number of years between 1 and 60.")
+        years = int(input("Number of years to simulate: "))
     target_goal = float(input("Target goal: $"))
 
     print(f"One portfolio simulation (${initial_value:,.0f} start, ${monthly_contribution:,.0f}/month, {years} years)")

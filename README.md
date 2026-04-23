@@ -20,6 +20,11 @@ Built on Step 1 by adding simulate_portfolio, a function that takes a starting d
 Step 3: Running 1,000 Simulations
 
 Added run_simulations, a function that calls simulate_portfolio 1,000 times, each with different random returns, and collects results into a  list where each row is one simulation's yearly portfolio values. Tests confirm the grid has exactly 1,000 rows and each row has the correct number of yearly values. The demo prints the lowest and highest final portfolio values across all 1,000 simulations to show the full range of possible outcomes.
+Running 1,000 Simulations to capture market uncertainty and show range of possible results. Added run_simulations(), a function that calls simulate_portfolio 1,000 times, each with different random returns, and collects results into a  list where each row is one simulation's yearly portfolio values. Added a block to run_tests(). Tests confirm the grid has exactly 1,000 rows and each row has the correct number of yearly values (30). Added a block to def demo() that prints the lowest and highest final portfolio values across all 1,000 simulations to show the full range of possible outcomes.  
+
+Step 5: User input
+
+Added interactive user input and formatted output display to make the simulation practical. The program now prompts users to enter their own investment parameters (starting amount, monthly contribution, years, and target goal) and runs a complete Monte Carlo analysis based on their inputs.	
 
 Citations
 
