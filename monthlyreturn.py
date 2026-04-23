@@ -228,6 +228,10 @@ def demo():
     print(f"\nProbability of reaching ${target_goal:,.0f} in {years} years: {results['probability_of_success']}%")
     #print(f"\nProbability of reaching $1,000,000 in 30 years: {results['probability_of_success']}%")
 
+    # Plot the results
+    plot_results(results, target_goal, years)
+
+    
 if __name__ == "__main__":
     run_tests()
     demo()
