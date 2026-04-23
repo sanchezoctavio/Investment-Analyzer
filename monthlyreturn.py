@@ -105,6 +105,8 @@ def analyze_results(all_paths, target_goal):
 
     return {"year_bands": year_bands, "probability_of_success": probability}
 
+def plot_results(results, target_goal, years):
+    
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
 
