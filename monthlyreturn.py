@@ -105,8 +105,26 @@ def analyze_results(all_paths, target_goal):
 
     return {"year_bands": year_bands, "probability_of_success": probability}
 
+# Step 6
 def plot_results(results, target_goal, years):
-    
+    # Plot the percentile bands over time
+    years = [band["year"] for band in results["year_bands"]]
+    p10 = [band["p10"] for band in results["year_bands"]]
+    p50 = [band["p50"] for band in results["year_bands"]]
+    p90 = [band["p90"] for band in results["year_bands"]]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(years, p10, label="Pessimistic (p10)", color="red")
+    plt.plot(years, p50, label="Median (p50)", color="blue")
+    plt.plot(years, p90, label="Optimistic (p90)", color="green")
+    plt.axhline(y=target_goal, color='gray', linestyle='--', label=f'Target Goal (${target_goal:,.0f})')
+    plt.title("Portfolio Value Percentiles Over Time")
+    plt.xlabel("Year")
+    plt.ylabel("Portfolio Value ($)")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
 
