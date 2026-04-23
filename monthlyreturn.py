@@ -123,7 +123,9 @@ def plot_results(results, target_goal, years):
     plt.ylabel("Portfolio Value ($)")
     plt.legend()
     plt.grid(True)
-    plt.show()
+    plt.savefig("portfolio_chart.png")
+
+    print("Chart saved as portfolio_chart.png")
 
 # Test functions to validate the behavior of our monthly
 # return generator and compounding logic
@@ -228,10 +230,11 @@ def demo():
     print(f"\nProbability of reaching ${target_goal:,.0f} in {years} years: {results['probability_of_success']}%")
     #print(f"\nProbability of reaching $1,000,000 in 30 years: {results['probability_of_success']}%")
 
+    # Step 6 demo
     # Plot the results
     plot_results(results, target_goal, years)
 
-    
+
 if __name__ == "__main__":
     run_tests()
     demo()
