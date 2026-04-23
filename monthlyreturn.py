@@ -60,7 +60,7 @@ def simulate_portfolio(initial_value, monthly_contribution, years):
 
 # Step 3
 def run_simulations(initial_value, monthly_contribution, years, num_simulations):
-    # Run portfolio simulation multigiple times to see a range of possible outcomes
+    # Run portfolio simulation multiple times to see a range of possible outcomes
     # Each run will produce a different path due to randomness,
     # so we can analyze the distribution of final values
     # Return list where each row is one simulation's yearly values
