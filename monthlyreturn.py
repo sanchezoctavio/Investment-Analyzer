@@ -1,4 +1,9 @@
+"""
+CS32 Final Project: Investment Analyzer
+"""
+
 import random
+import matplotlib.pyplot as plt
 
 # Annual S&P 500 historical averages
 # These are rough estimates based on long-term historical data,
