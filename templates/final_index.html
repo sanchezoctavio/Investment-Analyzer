@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Investment Portfolio Simulator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:           #f4f6fb;
+      --card:         #ffffff;
+      --ink:          #1f2937;
+      --muted:        #6b7280;
+      --brand:        #2c3e7a;
+      --brand-dark:   #1a2a5e;
+      --accent:       #c0392b;
+      --accent-2:     #27ae60;
+      --line:         #e5e7eb;
+      --soft:         #f8f9ff;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    header { margin-bottom: 24px; }
+    header .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    h1 { color: var(--brand); margin: 0; font-size: 1.9rem; }
+    .byline { color: var(--muted); font-size: 0.9rem; }
+    .lede { color: var(--muted); margin: 8px 0 0; }
+    h2 { color: var(--brand); margin: 32px 0 12px; font-size: 1.25rem; }
+    .h2-sub { font-size: 0.85rem; color: var(--muted); font-weight: 400; }
+
+    /* Presets */
+    .presets {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .preset-btn {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--brand);
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { background: var(--brand); color: white; border-color: var(--brand); }
+
+    /* Scenario form */
+    .scenarios {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .scenario-card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-top: 4px solid var(--brand);
+    }
+    .scenario-card.s2 { border-top-color: var(--accent); }
+    .scenario-card.s3 { border-top-color: var(--accent-2); opacity: 0.92; }
+
+    .scenario-card h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      background: var(--brand);
+    }
+    .scenario-card.s2 .swatch { background: var(--accent); }
+    .scenario-card.s3 .swatch { background: var(--accent-2); }
+    .optional-tag { color: var(--muted); font-weight: 400; font-size: 0.8rem; }
+
+    .form-group { margin-bottom: 10px; }
+    label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 3px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: white;
+      font-family: inherit;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(44,62,122,0.12);
+    }
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    /* Run button */
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    button.primary {
+      padding: 12px 28px;
+      background: var(--brand);
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.primary:hover { background: var(--brand-dark); }
+    .hint { color: var(--muted); font-size: 0.85rem; }
+    .hint-right { margin-left: auto; }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      border: 1px solid #fecaca;
+    }
+
+    /* Results */
+    .results-section { margin-top: 32px; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .summary-card {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 10px;
+      border-left: 4px solid var(--brand);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .summary-card .name {
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .summary-card .meta {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+    }
+    .summary-card .prob {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--brand);
+    }
+    .summary-card .sub {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .summary-card .median {
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    /* Chart */
+    .chart-card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+    }
+    .chart-toggles {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .chart-toggles label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.85rem;
+      margin: 0;
+      cursor: pointer;
+    }
+    .chart-toggles input[type="checkbox"] { width: auto; margin: 0; }
+    #chart-container { position: relative; height: 380px; }
+
+    /* Impact cards */
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .impact-card {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .impact-card .label {
+      font-weight: 600;
+      color: var(--brand);
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+    .impact-card .delta {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent-2);
+    }
+    .impact-card .delta.neg { color: var(--accent); }
+    .impact-card .delta-sub {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 4px;
+    }
+    .impact-card .prob-line {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Breakdown table */
+    .breakdown-card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-top: 20px;
+    }
+    .scenario-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .scenario-tab {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .scenario-tab.active {
+      background: var(--brand);
+      color: white;
+      border-color: var(--brand);
+    }
+
+    .breakdown-table { display: none; width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .breakdown-table.is-active { display: table; }
+    .breakdown-table th {
+      background: var(--brand);
+      color: white;
+      padding: 8px 10px;
+      text-align: right;
+    }
+    .breakdown-table th:first-child { text-align: center; }
+    .breakdown-table td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--line); }
+    .breakdown-table td:first-child { text-align: center; font-weight: 600; }
+    .breakdown-table tr:nth-child(even) td { background: var(--soft); }
+
+    /* About */
+    .about {
+      margin-top: 36px;
+      background: var(--card);
+      padding: 18px 22px;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .about strong { color: var(--ink); }
+    .about ul { margin: 8px 0; padding-left: 20px; }
+
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-row">
+      <h1>Investment Portfolio Simulator</h1>
+      <span class="byline">CS32 Final Project</span>
+    </div>
+    <p class="lede">Run 1,000 simulated market futures across multiple plans and compare your odds of hitting your goal.</p>
+  </header>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <h2>Quick presets</h2>
+  <div class="presets">
+    <button type="button" class="preset-btn" data-preset="grad">Recent grad</button>
+    <button type="button" class="preset-btn" data-preset="midcareer">Mid-career saver</button>
+    <button type="button" class="preset-btn" data-preset="late">Late starter</button>
+    <button type="button" class="preset-btn" data-preset="fire">FIRE aspirant</button>
+    <button type="button" class="preset-btn" data-preset="mix">Aggressive vs Conservative</button>
+  </div>
+
+  <form method="POST">
+    <div class="scenarios">
+
+      {% for i in range(1, 4) %}
+      <div class="scenario-card s{{ i }}">
+        <h3>
+          <span class="swatch"></span>
+          Scenario {{ i }}{% if i == 3 %} <span class="optional-tag">(optional)</span>{% endif %}
+        </h3>
+
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" name="scenario_{{ i }}_name"
+                 value="{{ form_values.get('scenario_' ~ i ~ '_name', '') }}"
+                 placeholder="{% if i == 1 %}Plan A{% elif i == 2 %}Plan B{% else %}Plan C{% endif %}">
+        </div>
+
+        <div class="form-group">
+          <label>Starting Value ($)</label>
+          <input type="number" name="scenario_{{ i }}_initial" step="any"
+                 value="{{ form_values.get('scenario_' ~ i ~ '_initial', '') }}"
+                 placeholder="10000">
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label>Monthly ($)</label>
+            <input type="number" name="scenario_{{ i }}_monthly" step="any"
+                   value="{{ form_values.get('scenario_' ~ i ~ '_monthly', '') }}"
+                   placeholder="500">
+          </div>
+          <div class="form-group">
+            <label>Raise %/yr</label>
+            <input type="number" name="scenario_{{ i }}_growth" step="any"
+                   value="{{ form_values.get('scenario_' ~ i ~ '_growth', '0') }}"
+                   placeholder="0">
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label>Years</label>
+            <input type="number" name="scenario_{{ i }}_years"
+                   value="{{ form_values.get('scenario_' ~ i ~ '_years', '30') }}"
+                   placeholder="30">
+          </div>
+          <div class="form-group">
+            <label>Target ($)</label>
+            <input type="number" name="scenario_{{ i }}_target" step="any"
+                   value="{{ form_values.get('scenario_' ~ i ~ '_target', '1000000') }}"
+                   placeholder="1000000">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Asset Mix</label>
+          <select name="scenario_{{ i }}_mix">
+            {% for key, mix in asset_mixes.items() %}
+              <option value="{{ key }}"
+                {% if form_values.get('scenario_' ~ i ~ '_mix', 'stocks') == key %}selected{% endif %}>
+                {{ mix.name }} ({{ "%.1f%%" | format(mix.annual_mean * 100) }} avg / {{ "%.1f%%" | format(mix.annual_std * 100) }} vol)
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Contribution Strategy</label>
+          <select name="scenario_{{ i }}_strategy">
+            {% set strat = form_values.get('scenario_' ~ i ~ '_strategy', 'flat') %}
+            <option value="flat"     {% if strat == 'flat' %}selected{% endif %}>Flat (same every month)</option>
+            <option value="growing"  {% if strat == 'growing' %}selected{% endif %}>Growing (use raise %)</option>
+            <option value="lump_sum" {% if strat == 'lump_sum' %}selected{% endif %}>Lump sum (front-loaded)</option>
+          </select>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="primary">Run Simulation</button>
+      <span class="hint">Leave Scenario 3 blank to compare just two.</span>
+    </div>
+  </form>
+
+  {% if scenarios_data %}
+  <div class="results-section">
+
+    <h2>Outcome summary</h2>
+    <div class="summary-grid">
+      {% for s in scenarios_data %}
+      <div class="summary-card" data-color="{{ s.color }}">
+        <div class="name">{{ s.name }}</div>
+        <div class="meta">
+          ${{ "{:,.0f}".format(s.initial_value) }} start ·
+          ${{ "{:,.0f}".format(s.monthly_contribution) }}/mo ·
+          {{ s.years }}y · {{ s.asset_mix_name }}
+          {% if s.strategy == 'growing' %} · {{ s.contribution_growth_pct }}% raise/yr{% endif %}
+          {% if s.strategy == 'lump_sum' %} · lump sum{% endif %}
+        </div>
+        <div class="prob" data-color="{{ s.color }}">{{ s.probability_of_success }}%</div>
+        <div class="sub">chance of reaching ${{ "{:,.0f}".format(s.target_goal) }}</div>
+        <div class="median">Median final: <strong>${{ "{:,.0f}".format(s.median_final) }}</strong></div>
+        {% if s.years_to_target %}
+          <div class="sub">Median hits goal in year {{ s.years_to_target }}</div>
+        {% else %}
+          <div class="sub">Median doesn't reach goal in {{ s.years }} years</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <h2>Projected growth</h2>
+    <div class="chart-card">
+      <div class="chart-toggles">
+        <label><input type="checkbox" id="toggle-bands"> Show p10 / p90 ranges</label>
+        <label><input type="checkbox" id="toggle-goal" checked> Show target line</label>
+        <span class="hint hint-right">Hover for exact values · click legend to toggle</span>
+      </div>
+      <div id="chart-container">
+        <canvas id="growth-chart"></canvas>
+      </div>
+    </div>
+
+    {% if impact_data %}
+    <h2>Impact analysis <span class="h2-sub">— small changes to "{{ scenarios_data[0].name }}"</span></h2>
+    <div class="impact-grid">
+      {% for imp in impact_data %}
+      <div class="impact-card">
+        <div class="label">{{ imp.label }}</div>
+        <div class="delta {% if imp.median_change < 0 %}neg{% endif %}">
+          {% if imp.median_change >= 0 %}+{% endif %}${{ "{:,.0f}".format(imp.median_change) }}
+        </div>
+        <div class="delta-sub">change in median final value</div>
+        <div class="prob-line">
+          New odds:
+          <strong>{{ imp.new_prob }}%</strong>
+          ({% if imp.prob_change >= 0 %}+{% endif %}{{ imp.prob_change | round(1) }} pts)
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2>Year-by-year breakdown</h2>
+    <div class="breakdown-card">
+      <div class="scenario-tabs" id="scenario-tabs">
+        {% for s in scenarios_data %}
+        <button type="button"
+                class="scenario-tab {% if loop.first %}active{% endif %}"
+                data-idx="{{ loop.index0 }}"
+                data-color="{{ s.color }}">
+          {{ s.name }}
+        </button>
+        {% endfor %}
+      </div>
+
+      {% for s in scenarios_data %}
+      <table class="breakdown-table {% if loop.first %}is-active{% endif %}" data-idx="{{ loop.index0 }}">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Pessimistic (p10)</th>
+            <th>Median (p50)</th>
+            <th>Optimistic (p90)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for band in s.year_bands %}
+          <tr>
+            <td>{{ band.year }}</td>
+            <td>${{ "{:,.0f}".format(band.p10) }}</td>
+            <td>${{ "{:,.0f}".format(band.p50) }}</td>
+            <td>${{ "{:,.0f}".format(band.p90) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <script type="application/json" id="scenarios-data">{{ scenarios_data | tojson }}</script>
+  {% endif %}
+
+  <div class="about">
+    <strong>About this project.</strong> I built this as my CS32 final project to make Monte Carlo investing tangible.
+    Each run draws monthly returns from a normal distribution calibrated to long-run historical averages, then chains
+    1,000 of those paths together to map out a realistic range of outcomes — not a single guess. The percentile bands
+    (p10, p50, p90) tell you what the bottom 10%, middle, and top 10% of futures look like.
+    <ul>
+      <li><strong>Asset mix presets</strong> use rough historical mean / volatility for each blend.</li>
+      <li><strong>Strategies</strong> let you compare flat contributions vs raises (growing) vs putting it all in upfront (lump sum).</li>
+      <li><strong>Impact analysis</strong> reruns the first scenario with a small tweak so you can see what actually moves the needle.</li>
+    </ul>
+    Not financial advice — just a study tool. Real markets aren't normally distributed and past returns don't guarantee future ones.
+  </div>
+
+  <footer>
+    CS32 Final Project · 2026
+  </footer>
+
+  <script>
+    // ----------------------------------------------------------------
+    // Preset scenarios — fill the form with sensible starting values
+    // ----------------------------------------------------------------
+    const PRESETS = {
+      grad: [
+        ["Now",         { initial: 1000,  monthly: 200,  years: 40, target: 1000000, mix: "stocks",       strategy: "flat",     growth: 0 }],
+        ["+$100/mo",    { initial: 1000,  monthly: 300,  years: 40, target: 1000000, mix: "stocks",       strategy: "flat",     growth: 0 }]
+      ],
+      midcareer: [
+        ["Steady",      { initial: 50000, monthly: 800,  years: 25, target: 1500000, mix: "balanced",     strategy: "flat",     growth: 0 }],
+        ["With raises", { initial: 50000, monthly: 800,  years: 25, target: 1500000, mix: "balanced",     strategy: "growing",  growth: 3 }]
+      ],
+      late: [
+        ["Late start",  { initial: 80000, monthly: 1500, years: 15, target: 1000000, mix: "balanced",     strategy: "flat",     growth: 0 }],
+        ["Aggressive",  { initial: 80000, monthly: 1500, years: 15, target: 1000000, mix: "stocks",       strategy: "flat",     growth: 0 }]
+      ],
+      fire: [
+        ["Standard",    { initial: 25000, monthly: 1500, years: 20, target: 1500000, mix: "stocks",       strategy: "flat",     growth: 0 }],
+        ["With raises", { initial: 25000, monthly: 1500, years: 20, target: 1500000, mix: "stocks",       strategy: "growing",  growth: 5 }],
+        ["Lump sum",    { initial: 25000, monthly: 1500, years: 20, target: 1500000, mix: "stocks",       strategy: "lump_sum", growth: 0 }]
+      ],
+      mix: [
+        ["Aggressive",   { initial: 10000, monthly: 500, years: 30, target: 1000000, mix: "stocks",       strategy: "flat",     growth: 0 }],
+        ["Balanced",     { initial: 10000, monthly: 500, years: 30, target: 1000000, mix: "balanced",     strategy: "flat",     growth: 0 }],
+        ["Conservative", { initial: 10000, monthly: 500, years: 30, target: 1000000, mix: "conservative", strategy: "flat",     growth: 0 }]
+      ]
+    };
+
+    function setField(i, suffix, value) {
+      const el = document.querySelector('[name="scenario_' + i + '_' + suffix + '"]');
+      if (el) el.value = value;
+    }
+
+    function applyPreset(key) {
+      const preset = PRESETS[key];
+      if (!preset) return;
+      for (let i = 1; i <= 3; i++) {
+        ["name", "initial", "monthly", "years", "target", "growth"].forEach(s => setField(i, s, ""));
+        setField(i, "mix", "stocks");
+        setField(i, "strategy", "flat");
+      }
+      preset.forEach(function (entry, idx) {
+        const name = entry[0];
+        const cfg  = entry[1];
+        const i    = idx + 1;
+        setField(i, "name",     name);
+        setField(i, "initial",  cfg.initial);
+        setField(i, "monthly",  cfg.monthly);
+        setField(i, "years",    cfg.years);
+        setField(i, "target",   cfg.target);
+        setField(i, "mix",      cfg.mix);
+        setField(i, "strategy", cfg.strategy);
+        setField(i, "growth",   cfg.growth);
+      });
+    }
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyPreset(btn.dataset.preset));
+    });
+
+    // ----------------------------------------------------------------
+    // Apply per-scenario colors from data-color attributes
+    // ----------------------------------------------------------------
+    document.querySelectorAll('.summary-card[data-color]').forEach(el => {
+      el.style.borderLeftColor = el.dataset.color;
+    });
+    document.querySelectorAll('.summary-card .prob[data-color]').forEach(el => {
+      el.style.color = el.dataset.color;
+    });
+    document.querySelectorAll('.scenario-tab.active[data-color]').forEach(el => {
+      el.style.background  = el.dataset.color;
+      el.style.borderColor = el.dataset.color;
+      el.style.color       = 'white';
+    });
+
+    // ----------------------------------------------------------------
+    // Chart + tab logic — only runs if results are present
+    // ----------------------------------------------------------------
+    const scenariosNode = document.getElementById('scenarios-data');
+    if (scenariosNode) {
+      const SCENARIOS = JSON.parse(scenariosNode.textContent);
+      const TARGET    = SCENARIOS[0].target_goal;
+      const labels    = SCENARIOS[0].year_bands.map(b => "Year " + b.year);
+
+      function fmtMoney(v) {
+        if (v >= 1e6) return "$" + (v / 1e6).toFixed(2) + "M";
+        if (v >= 1e3) return "$" + (v / 1e3).toFixed(0) + "k";
+        return "$" + Math.round(v);
+      }
+
+      function buildDatasets(showBands) {
+        const ds = [];
+        SCENARIOS.forEach(s => {
+          ds.push({
+            label: s.name + " (median)",
+            data: s.year_bands.map(b => b.p50),
+            borderColor: s.color,
+            backgroundColor: s.color,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            tension: 0.25,
+            _percentiles: s.year_bands
+          });
+          if (showBands) {
+            ds.push({
+              label: s.name + " (p10)",
+              data: s.year_bands.map(b => b.p10),
+              borderColor: s.color,
+              borderDash: [5, 4],
+              borderWidth: 1,
+              pointRadius: 0,
+              tension: 0.25,
+              fill: false
+            });
+            ds.push({
+              label: s.name + " (p90)",
+              data: s.year_bands.map(b => b.p90),
+              borderColor: s.color,
+              borderDash: [5, 4],
+              borderWidth: 1,
+              pointRadius: 0,
+              tension: 0.25,
+              fill: '-1',
+              backgroundColor: s.color + "20"
+            });
+          }
+        });
+        return ds;
+      }
+
+      const goalToggle = document.getElementById('toggle-goal');
+      const ctx = document.getElementById('growth-chart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: labels, datasets: buildDatasets(false) },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  const ds = ctx.dataset;
+                  if (ds._percentiles) {
+                    const b = ds._percentiles[ctx.dataIndex];
+                    return [
+                      ds.label.replace(' (median)', '') + ':',
+                      '  Median:      ' + fmtMoney(b.p50),
+                      '  Pessimistic: ' + fmtMoney(b.p10),
+                      '  Optimistic:  ' + fmtMoney(b.p90)
+                    ];
+                  }
+                  return ds.label + ': ' + fmtMoney(ctx.raw);
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: { callback: v => fmtMoney(v) },
+              grid: { color: '#eef0f5' }
+            },
+            x: { grid: { display: false } }
+          }
+        },
+        plugins: [{
+          id: 'goalLine',
+          afterDraw(chart) {
+            if (!goalToggle.checked) return;
+            const yScale = chart.scales.y;
+            const xArea  = chart.chartArea;
+            const y      = yScale.getPixelForValue(TARGET);
+            if (y < xArea.top || y > xArea.bottom) return;
+            const c = chart.ctx;
+            c.save();
+            c.beginPath();
+            c.setLineDash([6, 4]);
+            c.strokeStyle = '#1f2937';
+            c.lineWidth = 1.5;
+            c.moveTo(xArea.left, y);
+            c.lineTo(xArea.right, y);
+            c.stroke();
+            c.setLineDash([]);
+            c.fillStyle = '#1f2937';
+            c.font = '600 11px -apple-system, sans-serif';
+            c.textAlign = 'right';
+            c.fillText('Target ' + fmtMoney(TARGET), xArea.right - 6, y - 4);
+            c.restore();
+          }
+        }]
+      });
+
+      document.getElementById('toggle-bands').addEventListener('change', e => {
+        chart.data.datasets = buildDatasets(e.target.checked);
+        chart.update();
+      });
+      goalToggle.addEventListener('change', () => chart.update());
+
+      // Scenario tabs for breakdown table
+      document.querySelectorAll('.scenario-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = btn.dataset.idx;
+          document.querySelectorAll('.scenario-tab').forEach(b => {
+            b.classList.remove('active');
+            b.style.background  = '';
+            b.style.borderColor = '';
+            b.style.color       = '';
+          });
+          btn.classList.add('active');
+          btn.style.background  = SCENARIOS[idx].color;
+          btn.style.borderColor = SCENARIOS[idx].color;
+          btn.style.color       = 'white';
+          document.querySelectorAll('.breakdown-table').forEach(t => {
+            t.classList.toggle('is-active', t.dataset.idx === idx);
+          });
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>
