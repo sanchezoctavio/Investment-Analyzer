@@ -53,19 +53,24 @@ DEFAULT_FORM_VALUES = {
     "scenario_3_strategy": "flat",
 }
 
-
+# Pull all the scenario inputs out of the submitted HTML form and
+# return them as a list of dictionaries — one dict per scenario that
+# the user actually filled in.
 def parse_scenarios(form):
     """Return a list of populated scenarios (skipping rows without a name)."""
     scenarios = []
+    # Loop through scenario 1, 2, 3 (range stops before max+1)
     for i in range(1, MAX_SCENARIOS + 1):
         name = form.get(f"scenario_{i}_name", "").strip()
         if not name:
             continue
-
+        # Same thing for starting value, if that's missing,
+        # skip the scenario even if they filled in other fields.
         initial_raw = form.get(f"scenario_{i}_initial", "").strip()
         if not initial_raw:
             continue
 
+        # Scenario dictionary
         scenarios.append({
             "name":                 name,
             "initial_value":        float(initial_raw),
