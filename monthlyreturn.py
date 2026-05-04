@@ -15,6 +15,30 @@ annual_std  = 0.15   # 15% volatility
 monthly_mean = annual_mean / 12
 monthly_std  = annual_std / (12 ** 0.5)
 
+# Asset Mix Presets
+ASSET_MIXES = {
+    "stocks": {
+        "name":         "100% Stocks (S&P 500)",
+        "annual_mean":  0.10,
+        "annual_std":   0.15
+    },
+    "balanced": {
+        "name":         "60% Stocks / 40% Bonds",
+        "annual_mean":  0.075,
+        "annual_std":   0.10
+    },
+    "conservative": {
+        "name":         "40% Stocks / 60% Bonds",
+        "annual_mean":  0.06,
+        "annual_std":   0.07,
+    },
+    "bonds": {
+        "name":         "100% Bonds",
+        "annual_mean":  0.04,
+        "annual_std":   0.05
+    }
+}
+
 # Function to draw a single monthly return from the normal distribution
 def draw_monthly_return():
     # Use random.gauss to pick a random point on bell curve
