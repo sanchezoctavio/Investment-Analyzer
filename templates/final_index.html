@@ -651,9 +651,7 @@
       btn.addEventListener('click', () => applyPreset(btn.dataset.preset));
     });
 
-    // ----------------------------------------------------------------
-    // Apply per-scenario colors from data-color attributes
-    // ----------------------------------------------------------------
+
     document.querySelectorAll('.summary-card[data-color]').forEach(el => {
       el.style.borderLeftColor = el.dataset.color;
     });
@@ -666,9 +664,7 @@
       el.style.color       = 'white';
     });
 
-    // ----------------------------------------------------------------
-    // Chart + tab logic — only runs if results are present
-    // ----------------------------------------------------------------
+
     const scenariosNode = document.getElementById('scenarios-data');
     if (scenariosNode) {
       const SCENARIOS = JSON.parse(scenariosNode.textContent);
@@ -792,7 +788,7 @@
       });
       goalToggle.addEventListener('change', () => chart.update());
 
-      // Scenario tabs for breakdown table
+
       document.querySelectorAll('.scenario-tab').forEach(btn => {
         btn.addEventListener('click', () => {
           const idx = btn.dataset.idx;
