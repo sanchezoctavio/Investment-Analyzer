@@ -85,18 +85,30 @@ def parse_scenarios(form):
     return scenarios
 
 
+# Check a single parsed scenario for invalid inputs and return a
+# human readable error message describing the first problem found.
+# Returns None if the scenario passes every check.
 def validate_scenario(s):
     """Return an error message if the scenario is invalid, else None."""
+    # Starting value must be > 0, monthly contribution can't be negative,
+    # years must be reasonable, etc.
     if s["initial_value"] <= 0:
         return f"'{s['name']}': starting value must be positive."
+    # Monthly contribution can be zero (for lump sum scenarios) but not negative.
     if s["monthly_contribution"] < 0:
         return f"'{s['name']}': monthly contribution can't be negative."
+    # Cap years at 60 to avoid very long runs that might crash the server
+    # or make users wait too long.
     if s["years"] <= 0 or s["years"] > 60:
         return f"'{s['name']}': years must be between 1 and 60."
+    # Target goal must be positive to avoid weirdness
+    # in the probability of success calculation.
     if s["target_goal"] <= 0:
         return f"'{s['name']}': target goal must be positive."
+    # Asset mix must be one of the predefined options we know how to simulate.
     if s["asset_mix"] not in ASSET_MIXES:
         return f"'{s['name']}': unknown asset mix."
+    # Contribution strategy must be one of the options we know how to simulate.
     if s["strategy"] not in ("flat", "growing", "lump_sum"):
         return f"'{s['name']}': unknown contribution strategy."
     return None
