@@ -206,6 +206,9 @@ def index():
         for k, v in request.form.items():
             form_values[k] = v
 
+        # Wrap the parsing in try/except because float() and int() will
+        # raise ValueError if the user typed letters into a number field.
+        # Better to show a friendly error than a 500 page.
         try:
             scenarios = parse_scenarios(request.form)
             if not scenarios:
