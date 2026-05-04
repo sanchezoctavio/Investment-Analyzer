@@ -1,42 +1,57 @@
-# Investment-Analyzer
-This project simulates long-term investment portfolio growth to model variability of financial markets. Instead of relying on single fixed rate of return, this program should run randomized simulations of possible market futures.
+Investment Portfolio Simulator
 
-By inputting initial portfolio value, monthly contributions, target financial goals, and risks involved. Compared against good and years of historic markets, it will deliver a possible range of what the investment should return.
+Our program is an Investment Analyzer portfolio simulator that takes possible market futures for an investment portfolio and allows the user to then compare three different investment plans side-by-side.
 
-How It Works
 
-Each month of the simulation draws a random market return from a bell curve based on S&P 500 historical averages (10% mean annual return, 15% volatility). Running 1,000 of these simulated futures and analyzing the results produces a realistic range of outcomes, showing pessimistic, median, and optimistic portfolio values over time, along with the probability of hitting a target goal. Running 1,000 of these simulated futures and analyzing the results produces a realistic range of outcomes.
+What it does
+The user picks a starting amount of money to invest, a monthly contribution amount, a time horizon to allow the money to grow, and a savings goal amount. The app then simulates 1,000 possible market futures by drawing monthly returns from a normal distribution set in accordance with long-run historical averages. It then shows the following:
 
-Project Steps
+The probability of reaching the set savings goal amount
+A range of possible portfolio values at each year (10th, 50th, and 90th percentiles)
+An interactive growth chart that lets the user see exact values
+An impact analysis showing how small changes (an extra $100/month contributed, 5 more years of growth, $5,000 more upfront invested initially) affect the investment
 
-Step 1: Drawing Random Returns
+You can run up to three scenarios at once to compare different asset mixes (Stocks / Balanced / Conservative / Bonds) and contribution strategies (flat monthly, with annual raises, or a single lump sum).
 
-Wrote and tested the first foundational functions: drawing a single random monthly return from a normal distribution using random.gauss, chaining 12 monthly returns into a compounded annual return, and a demo that prints 3 example years of market returns. Tests verify that the output is always 12 values per year, no monthly return exceeds ±60%, and the average of 100,000 samples converges to the expected mean.
 
-Step 2: Simulating a Full Portfolio
+Features
+Multi-scenario comparison: define up to three plans and overlay them on the same chart
+Asset mix presets: switch between historical-average return / volatility profiles
+Contribution strategies: flat, growing (annual raise %), or lump-sum
+Quick presets: one-click setups for "Recent grad", "Mid-career saver", "Late starter", and "Aggressive vs Conservative"
+Interactive Chart.js graph: hover for exact values, toggle p10/p90 ranges, click legend to hide individual scenarios
+Impact analysis: automatic re-runs of the first scenario with small tweaks
+Tabbed year-by-year breakdown: full percentile table for each scenario
+Animated grid-beam background: pure CSS + SMIL-animated SVG, no JS framework
 
-Built on Step 1 by adding simulate_portfolio, a function that takes a starting dollar amount, a monthly contribution, and a number of years, and simulates how the portfolio grows month by month. There is a monthly loop where each month the portfolio is multiplied by a random return and the contribution is added at the end of the month. The portfolio value is recorded at the end of each year, returning a list of yearly snapshots. Snapshots and rounding happen at the end of the yearly loops to keep code clean and to return a manageable number of outputs. Tests confirm the correct number of yearly values are returned and the final value is always positive. This function is then tested and demonstrated using a random but constant seed to make returns reproducible. Generative AI and research into Monte Carlo simulations were used in finding the typical path to test the simulation (giving us some standard values of $10000 starting, $500 monthly, and 30 years). Generative AI was also used in debugging and finding ideal formatting. An example is asking generative AI the best way to formulate the since changed line 213 to make formatting 1-10 and aligning the outputs correctly to give a right-aligned clean format.
 
-Step 3: Running 1,000 Simulations
+Setup
+Special installment steps:
+pip install flask matplotlib
 
-Added run_simulations, a function that calls simulate_portfolio 1,000 times, each with different random returns, and collects results into a  list where each row is one simulation's yearly portfolio values. Tests confirm the grid has exactly 1,000 rows and each row has the correct number of yearly values. The demo prints the lowest and highest final portfolio values across all 1,000 simulations to show the full range of possible outcomes.
-Running 1,000 Simulations to capture market uncertainty and show range of possible results. Added run_simulations(), a function that calls simulate_portfolio 1,000 times, each with different random returns, and collects results into a  list where each row is one simulation's yearly portfolio values. Added a block to run_tests(). Tests confirm the grid has exactly 1,000 rows and each row has the correct number of yearly values (30). Added a block to def demo() that prints the lowest and highest final portfolio values across all 1,000 simulations to show the full range of possible outcomes.  
 
-Step 4
+Running the app
+From the project root:
+python3 final_app.py
+Then open http://127.0.0.1:5000 in your browser.
 
-In step 4 we created the analyze_results function taking all the paths created and the target amount as its inputs. The portfolio value at the end of each year is sorted into a column. These values were then sorted into low and high percentiles (p10, p50, and p90). The final value of the portfolio in each path is then calculated and compared to the target amount. The probability that the final portfolio value is above the target is calculated across simulations and then returned. The function is then called on and tested. Tests use $1000000 as an example target goal. Tests then confirm the correct number of yearly values, that the pessimistic (p10) return is less than the Median (p50) which is less than the Optimistic (p90) return values across simulations as a sanity check. Tests then confirm that the probability is a valid percentage (between 0 and 100). The function is then demonstrated running the analysis and printing the results cleanly. Generative AI and research on Monte Carlo simulations were used in debugging and ideal formatting once again. The two biggest examples are once again the print statements in 229-233 and needed help grabbing the final values cleanly in line 99. Original print statements were not cleanly formatted  and there were bugs in grabbing the final values of the portfolio so generative AI was consulted in how to format the returns cleanly. I gave the goal of line 99, to grab the final value of the portfolio, and it helped breakthrough this block.
+You can also run the engine standalone (no web UI) to use the CLI version with prompts and a saved PNG chart:
+python3 monthlyreturn.py
 
-Step 5: User input
 
-Added interactive user input and formatted output display to make the simulation practical. The program now prompts users to enter their own investment parameters (starting amount, monthly contribution, years, and target goal) and runs a complete investment analysis based on their inputs.
 
-Citations
+How it works
+Each simulation draws 12 monthly returns for each year from random.gauss(mean, std), where mean and std come from the chosen asset mix. The portfolio compounds month by month: value = value * (1 + return) + monthly_contribution. After 1,000 paths, the results are analyzed by sorting each year's values and showing the 10th, 50th, and 90th percentile to produce the "pessimistic / median / optimistic" bands the user will see in the chart.
 
-We used Claude to assist at certain points in this project, primarily for explanations and debugging help.
-We used Claude to help explain certain Python concepts we weren't familiar with, such as how random.gauss works. We also used AI to find out how to structure the test assertions.
-For step 5, used AI to help debug, help format our outputs, and assist with proper f-string formatting.
+The probability of success is the fraction of the 1,000 simulated final values for the investment that meet or exceed the target goal amount.
 
-Debugging
+The impact analysis runs the first scenario again three times over with one input slightly changed (+$100/month, +5 years, +$5,000 starting) and reports the change in median final value and probability of success.
 
-When the code threw an AssertionError on the portfolio test, we used AI to help identify the cause. It pointed out that the assertion was testing something dependent on random market performance, and found out we had to update it to assert path[-1] > 0 instead.
-Step 5 Debugging: Initially had issues with the table alignment when dollar amounts varied in length. Used AI to help with f-string formatting with width specifiers and the format code for comma separators with no decimal places, which fixed the alignment issues and made the table look better.
+
+
+Acknowledgements
+
+Generative AI tools
+We used Anthropic's Claude as a coding collaborator to extend our project from a single-scenario CLI / Flask demo into the multi-scenario comparison web app described above. Specifically:
+
+Original work: the core of the Investment Analyzer simulation logic in monthlyreturn.py: draw_monthly_return, draw_year_of_returns, compound_annual_return, the original simulate_portfolio, run_simulations, analyze_results, the percentile-band analysis, the original run_tests, the CLI demo, and the static matplotlib plot_results chart. The first version of final_app.py (a single-scenario Flask form that returned a base64-encoded matplotlib chart) and the first version of final_index.html (a single-scenario form and results table) were also written by us.
