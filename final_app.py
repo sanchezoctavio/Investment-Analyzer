@@ -113,9 +113,13 @@ def validate_scenario(s):
         return f"'{s['name']}': unknown contribution strategy."
     return None
 
-
+# Run the simulations for one scenario and analyze the results to get the
+# data we need to render the template.
 def run_scenario(s):
     """Run NUM_SIMULATIONS sims for one scenario and analyze the result."""
+    # Run NUM_SIMULATIONS independent portfolio paths using the user's
+    # inputs. Each path is a list of yearly portfolio values. We get
+    # back a list-of-lists with one row per simulation.
     paths = run_simulations(
         s["initial_value"], s["monthly_contribution"], s["years"],
         NUM_SIMULATIONS,
