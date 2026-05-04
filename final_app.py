@@ -1,9 +1,11 @@
 """
 Investment Portfolio Simulator — Flask web app
+Reads user input from a form, runs simulations, and renders results in a template.
 """
 
 from flask import Flask, render_template, request
 
+# Import simulation engine functions from standalone module so we can keep this file focused on the web app logic.
 from monthlyreturn import (
     run_simulations,
     analyze_results,
@@ -11,6 +13,8 @@ from monthlyreturn import (
     ASSET_MIXES,
 )
 
+# Standard Flask boilerplate — creates the application object that
+# routes requests to the functions defined later in this file.
 app = Flask(__name__)
 
 NUM_SIMULATIONS  = 1000
