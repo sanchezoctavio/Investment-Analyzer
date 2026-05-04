@@ -60,4 +60,17 @@ AI-assisted (Claude): Claude helped us extend monthlyreturn.py with the ASSET_MI
 
 AI-assisted (Claude): Claude rewrote final_app.py to handle up to three scenarios per submission. Specifically, the helpers parse_scenarios, validate_scenario, run_scenario, build_scenario_payload, and the compute_impact analysis function were authored by Claude.
 
-AI-assisted (Claude): Claude rewrote templates/final_index.html with the multi-scenario form, the preset buttons (Recent grad, Mid-career saver, etc.), Chart.js integration in place of the matplotlib PNG, the outcome-summary cards, the impact-analysis cards, the tab system for the breakdown table, and the CSS styling. Claude also helped refactor the template to eliminate false-positive lint warnings (moving dynamic colors to data-color attributes, consolidating duplicate <script> blocks, embedding the scenarios JSON in a <script type="application/json"> block).
+AI-assisted (Claude): Claude rewrote templates/final_index.html with the multi-scenario form, the preset buttons (Recent grad, Mid-career saver, etc.), Chart.js integration in place of the matplotlib PNG, the outcome-summary cards, the impact-analysis cards, the tab system for the breakdown table, and the CSS styling.
+
+AI-assisted (Claude): the animated "grid + beam" background was originally a React/Tailwind/framer-motion component we found online. Claude ported it to plain CSS + an SMIL-animated SVG so it would work inside the existing Flask template.
+
+
+External libraries
+Flask: the web framework
+Matplotlib: the static chart in the CLI version
+Chart.js (v4.4.1, loaded from CDN):  the interactive chart in the web app
+
+Conceptual sources
+The historical-average annual return (~10%) and volatility (~15%) figures for the S&P 500 are widely cited estimates rather than data from a specific source.
+The asset mix presets (60/40 balanced, 40/60 conservative, etc.) use approximate historical averages for those blends.
+The grid-beam background visual was inspired by a publicly shared shadcn/ui community component.
