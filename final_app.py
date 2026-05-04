@@ -187,9 +187,14 @@ def compute_impact(base_scenario, base_results):
 
     return impacts
 
-
+# @app.route maps URL paths to Python functions. This one says:
+# "when someone visits / using either GET (page load) or POST
+# (form submission), call index()."
 @app.route("/", methods=["GET", "POST"])
 def index():
+    # Initialize all four template variables to their "empty" state.
+    # On a GET request these stay None and the page renders with just
+    # the form (no results, no error). On a POST they may get filled in.
     scenarios_data = None
     impact_data    = None
     error          = None
