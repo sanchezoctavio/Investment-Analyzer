@@ -6,6 +6,24 @@
   <title>Investment Portfolio Simulator</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
+        /* Grid + beam hero */
+    .grid-hero {
+      position: relative;
+      padding: 36px 0 24px;
+      margin-bottom: 24px;
+    }
+    .grid-hero > * { position: relative; z-index: 1; }
+    .grid-hero .beam {
+      position: absolute;
+      top: 16px;
+      left: 96px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @media (max-width: 600px) {
+      .grid-hero .beam { left: 16px; }
+    }
+
     :root {
       --bg:           #f4f6fb;
       --card:         #ffffff;
@@ -20,15 +38,22 @@
     }
 
     * { box-sizing: border-box; }
+    html {
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(31, 41, 55, 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 41, 55, 0.10) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       max-width: 1100px;
       margin: 30px auto;
       padding: 0 20px;
-      background: var(--bg);
+      background: transparent;
       color: var(--ink);
       line-height: 1.5;
-    }
+}
 
     header { margin-bottom: 24px; }
     header .title-row {
@@ -330,13 +355,31 @@
 </head>
 <body>
 
-  <header>
-    <div class="title-row">
-      <h1>Investment Portfolio Simulator</h1>
-      <span class="byline">CS32 Final Project</span>
-    </div>
-    <p class="lede">Run 1,000 simulated market futures across multiple plans and compare your odds of hitting your goal.</p>
-  </header>
+  <header class="grid-hero">
+  <svg class="beam" width="156" height="63" viewBox="0 0 156 63" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M31 .5h32M0 .5h32m30 31h32m-1 0h32m-1 31h32M62.5 32V0m62 63V31"
+      stroke="url(#beam-grad)" stroke-width="1.5"/>
+    <defs>
+      <linearGradient id="beam-grad">
+        <stop stop-color="#18CCFC" stop-opacity="0"/>
+        <stop stop-color="#18CCFC"/>
+        <stop offset="0.325" stop-color="#6344F5"/>
+        <stop offset="1" stop-color="#AE48FF" stop-opacity="0"/>
+        <animate attributeName="x1" values="40%;0%;0%" keyTimes="0;0.474;1" dur="3.8s" repeatCount="indefinite"/>
+        <animate attributeName="x2" values="50%;10%;10%" keyTimes="0;0.474;1" dur="3.8s" repeatCount="indefinite"/>
+        <animate attributeName="y1" values="160%;-40%;-40%" keyTimes="0;0.474;1" dur="3.8s" repeatCount="indefinite"/>
+        <animate attributeName="y2" values="180%;-20%;-20%" keyTimes="0;0.474;1" dur="3.8s" repeatCount="indefinite"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="title-row">
+    <h1>Investment Portfolio Simulator</h1>
+    <span class="byline">CS32 Final Project</span>
+  </div>
+  <p class="lede">Run 1,000 simulated market futures across multiple plans and compare your odds of hitting your goal.</p>
+</header>
 
   {% if error %}
     <div class="error">{{ error }}</div>
@@ -454,7 +497,7 @@
         </div>
         <div class="prob" data-color="{{ s.color }}">{{ s.probability_of_success }}%</div>
         <div class="sub">chance of reaching ${{ "{:,.0f}".format(s.target_goal) }}</div>
-        <div class="median">Median final: <strong>${{ "{:,.0f}".format(s.median_final) }}</strong></div>
+        <div class="median">Median final: <strong>${{ "{:,.0f}".format(s.median_final_value) }}</strong></div>
         {% if s.years_to_target %}
           <div class="sub">Median hits goal in year {{ s.years_to_target }}</div>
         {% else %}
@@ -539,9 +582,9 @@
   {% endif %}
 
   <div class="about">
-    <strong>About this project.</strong> I built this as my CS32 final project to make Monte Carlo investing tangible.
+    <strong>About this project.</strong> Peter, Conor, and Octavio built this as their CS32 final project to make a tangible Investment tool.
     Each run draws monthly returns from a normal distribution calibrated to long-run historical averages, then chains
-    1,000 of those paths together to map out a realistic range of outcomes — not a single guess. The percentile bands
+    1,000 of those paths together to map out a realistic range of outcomes. The percentile bands
     (p10, p50, p90) tell you what the bottom 10%, middle, and top 10% of futures look like.
     <ul>
       <li><strong>Asset mix presets</strong> use rough historical mean / volatility for each blend.</li>

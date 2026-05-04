@@ -39,16 +39,23 @@ ASSET_MIXES = {
     }
 }
 
+def get_monthly_params(asset_mix="stocks"):
+    """Return (monthly_mean, monthly_std) for the given asset mix"""
+    mix = ASSET_MIXES.get(asset_mix, ASSET_MIXES["stocks"])
+    monthly_mean = mix["annual_mean"] / 12
+    monthly_std = mix["annual_std"] / (12 ** 0.5)
+    return monthly_mean, monthly_std
+
 # Function to draw a single monthly return from the normal distribution
-def draw_monthly_return():
+def draw_monthly_return(monthly_mean=monthly_mean, monthly_std=monthly_std):
     # Use random.gauss to pick a random point on bell curve
     # defined by our monthly mean and std
     return random.gauss(monthly_mean, monthly_std)
 
 # Function to draw a year's worth of monthly returns
-def draw_year_of_returns():
+def draw_year_of_returns(monthly_mean=monthly_mean, monthly_std=monthly_std):
     # Draw 12 monthly returns and return them as a list
-    return [draw_monthly_return() for _ in range(12)]
+    return [draw_monthly_return(monthly_mean, monthly_std) for _ in range(12)]
 
 
 def compound_annual_return(monthly_returns):
@@ -64,26 +71,48 @@ def compound_annual_return(monthly_returns):
 
 
 # Step 2
-def simulate_portfolio(initial_value, monthly_contribution, years):
+def simulate_portfolio(initial_value, monthly_contribution, years,
+                       asset_mix="stocks",
+                       strategy="flat",
+                       contribution_growth=0.0):
+    monthly_mean, monthly_std = get_monthly_params(asset_mix)
+
+    if strategy == "lump_sum":
+        # Front load all contributions at the start of the simulation
+        total_future_contributions = monthly_contribution * 12 * years
+        portfolio_value = initial_value + total_future_contributions
+        current_monthly = 0.0
+    else:
+        # Flat or growth strategy will contribute monthly as we go
+        portfolio_value = initial_value
+        current_monthly = monthly_contribution
+
+    yearly_values = []
     # Simulate one possible portfolio path over a given number of years
     # Each month, grow the portfolio by a random return, then add the contribution
     # Record the portfolio value at the end of each year
     # Return a list of the portfolio value at the end of each year
-    portfolio_value = initial_value
-    yearly_values = []
 
     for year in range(years):
         # Simulate 12 months for this year
-        for month in draw_year_of_returns():
-            portfolio_value = portfolio_value * (1 + month) + monthly_contribution
+        for _ in range(12):
+            r = draw_monthly_return(monthly_mean, monthly_std)
+            portfolio_value = portfolio_value * (1 + r) + current_monthly
 
         # Snapshot the portfolio value at the end of the year
         yearly_values.append(round(portfolio_value, 2))
 
+        if strategy == "growing":
+            # Increase the monthly contribution by the growth rate for the next year
+            current_monthly *= (1 + contribution_growth)
+
     return yearly_values
 
 # Step 3
-def run_simulations(initial_value, monthly_contribution, years, num_simulations):
+def run_simulations(initial_value, monthly_contribution, years, num_simulations,
+                    asset_mix="stocks",
+                    strategy="flat",
+                    contribution_growth=0.0):
     # Run portfolio simulation multiple times to see a range of possible outcomes
     # Each run will produce a different path due to randomness,
     # so we can analyze the distribution of final values
@@ -91,7 +120,11 @@ def run_simulations(initial_value, monthly_contribution, years, num_simulations)
     all_paths = []
 
     for _ in range(num_simulations):
-        path = simulate_portfolio(initial_value, monthly_contribution, years)
+        path = simulate_portfolio(
+            initial_value, monthly_contribution, years,
+            asset_mix=asset_mix,
+            strategy=strategy,
+            contribution_growth=contribution_growth)
         all_paths.append(path)
 
     return all_paths
@@ -121,13 +154,18 @@ def analyze_results(all_paths, target_goal):
 
     # Count how many simulations reached the target goal by the final year
     final_values = [all_paths[sim][-1] for sim in range(num_simulations)]
-    success_count = 0
-    for value in final_values:
-        if value >= target_goal:
-            success_count += 1
+    success_count = sum(1 for value in final_values if value >= target_goal)
     probability = round(success_count / num_simulations * 100, 1)
 
-    return {"year_bands": year_bands, "probability_of_success": probability}
+    return {"year_bands": year_bands, "probability_of_success": probability,
+            "median_final_value": year_bands[-1]["p50"],}
+
+def years_to_target(year_bands, target_goal):
+    """First year where the median (p50) value reaches the target goal, or None if it never does"""
+    for band in year_bands:
+        if band["p50"] >= target_goal:
+            return band["year"]
+    return None
 
 # Step 6
 def plot_results(results, target_goal, years):
@@ -194,6 +232,23 @@ def run_tests():
         assert band["p10"] < band["p50"] < band["p90"]
     # probability of success should be between 0 and 100
     assert 0 <= results["probability_of_success"] <= 100
+
+    # Asset Mix check, bonds should have lower mean than stocks
+    random.seed(1)
+    stocks_paths = run_simulations(10000, 500, 30, 500, asset_mix="stocks")
+    random.seed(1)
+    bonds_paths  = run_simulations(10000, 500, 30, 500, asset_mix="bonds")
+    stocks_med = analyze_results(stocks_paths, 1)["median_final_value"]
+    bonds_med  = analyze_results(bonds_paths, 1)["median_final_value"]
+    assert stocks_med > bonds_med, "Stocks should outperform bonds in median over 30y"
+
+    # lump_sum should produce higher than flat strategy because all contributions are invested from the start
+    random.seed(7)
+    flat_paths = run_simulations(10000, 500, 30, 500, strategy="flat")
+    random.seed(7)
+    lump_paths = run_simulations(10000, 500, 30, 500, strategy="lump_sum")
+    assert analyze_results(lump_paths, 1)["median_final_value"] > \
+           analyze_results(flat_paths, 1)["median_final_value"]
 
     print("All tests passed")
 

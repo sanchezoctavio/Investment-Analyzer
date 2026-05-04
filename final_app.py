@@ -4,7 +4,7 @@ Investment Portfolio Simulator — Flask web app
 
 from flask import Flask, render_template, request
 
-from final_monthlyreturn import (
+from monthlyreturn import (
     run_simulations,
     analyze_results,
     years_to_target,
@@ -120,7 +120,7 @@ def build_scenario_payload(s, results):
         "contribution_growth_pct": round(s["contribution_growth"] * 100, 2),
         "year_bands":             results["year_bands"],
         "probability_of_success": results["probability_of_success"],
-        "median_final":           results["median_final"],
+        "median_final_value":     results["median_final_value"],
         "years_to_target":        years_to_target(results["year_bands"], s["target_goal"]),
     }
 
@@ -131,7 +131,7 @@ def compute_impact(base_scenario, base_results):
     Each entry compares to the base run we already have in hand,
     so we only run 3 extra simulation batches.
     """
-    base_median = base_results["median_final"]
+    base_median = base_results["median_final_value"]
     base_prob   = base_results["probability_of_success"]
     impacts = []
 
@@ -150,9 +150,9 @@ def compute_impact(base_scenario, base_results):
         r = run_scenario(s)
         impacts.append({
             "label":         label,
-            "median_change": r["median_final"]          - base_median,
+            "median_change": r["median_final_value"]          - base_median,
             "prob_change":   r["probability_of_success"] - base_prob,
-            "new_median":    r["median_final"],
+            "new_median":    r["median_final_value"],
             "new_prob":      r["probability_of_success"],
         })
 
