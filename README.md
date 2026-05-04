@@ -54,4 +54,10 @@ Acknowledgements
 Generative AI tools
 We used Anthropic's Claude as a coding collaborator to extend our project from a single-scenario CLI / Flask demo into the multi-scenario comparison web app described above. Specifically:
 
-Original work: the core of the Investment Analyzer simulation logic in monthlyreturn.py: draw_monthly_return, draw_year_of_returns, compound_annual_return, the original simulate_portfolio, run_simulations, analyze_results, the percentile-band analysis, the original run_tests, the CLI demo, and the static matplotlib plot_results chart. The first version of final_app.py (a single-scenario Flask form that returned a base64-encoded matplotlib chart) and the first version of final_index.html (a single-scenario form and results table) were also written by us.
+Original work: the core of the Investment Analyzer simulation logic in monthlyreturn.py: draw_monthly_return, draw_year_of_returns, compound_annual_return, the original simulate_portfolio, run_simulations, analyze_results.
+
+AI-assisted (Claude): Claude helped us extend monthlyreturn.py with the ASSET_MIXES preset dictionary, the get_monthly_params helper, the new asset_mix / strategy / contribution_growth parameters on simulate_portfolio and run_simulations, the years_to_target helper, and two additional unit tests (an asset-mix sanity check and a lump-sum vs flat comparison).
+
+AI-assisted (Claude): Claude rewrote final_app.py to handle up to three scenarios per submission. Specifically, the helpers parse_scenarios, validate_scenario, run_scenario, build_scenario_payload, and the compute_impact analysis function were authored by Claude.
+
+AI-assisted (Claude): Claude rewrote templates/final_index.html with the multi-scenario form, the preset buttons (Recent grad, Mid-career saver, etc.), Chart.js integration in place of the matplotlib PNG, the outcome-summary cards, the impact-analysis cards, the tab system for the breakdown table, and the CSS styling. Claude also helped refactor the template to eliminate false-positive lint warnings (moving dynamic colors to data-color attributes, consolidating duplicate <script> blocks, embedding the scenarios JSON in a <script type="application/json"> block).
