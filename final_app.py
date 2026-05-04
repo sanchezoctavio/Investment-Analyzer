@@ -151,7 +151,9 @@ def build_scenario_payload(s, results):
         "years_to_target":        years_to_target(results["year_bands"], s["target_goal"]),
     }
 
-
+# A what if analysis, re-run the base scenario with one input
+# nudged up slightly, and report how each tweak changes the median
+# final value and the probability of success.
 def compute_impact(base_scenario, base_results):
     """
     Show how small tweaks to the base scenario change the outcome.
