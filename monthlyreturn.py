@@ -70,7 +70,6 @@ def compound_annual_return(monthly_returns):
     return value - 1
 
 
-# Step 2
 def simulate_portfolio(initial_value, monthly_contribution, years,
                        asset_mix="stocks",
                        strategy="flat",
@@ -108,7 +107,6 @@ def simulate_portfolio(initial_value, monthly_contribution, years,
 
     return yearly_values
 
-# Step 3
 def run_simulations(initial_value, monthly_contribution, years, num_simulations,
                     asset_mix="stocks",
                     strategy="flat",
@@ -129,7 +127,6 @@ def run_simulations(initial_value, monthly_contribution, years, num_simulations,
 
     return all_paths
 
-# Step 4
 # Analyze the distribution of final portfolio values from our simulations,
 # looking at metrics like the median, 10th percentile, and 90th percentile
 # to understand the range of outcomes
@@ -167,7 +164,6 @@ def years_to_target(year_bands, target_goal):
             return band["year"]
     return None
 
-# Step 6
 def plot_results(results, target_goal, years):
     # Plot the percentile bands over time
     years = [band["year"] for band in results["year_bands"]]
@@ -210,20 +206,17 @@ def run_tests():
     # checks that the average of our 100,000 samples is close to the expected monthly mean
     assert abs(sample_mean - monthly_mean) < 0.001
 
-    # Step 2 tests
     # simulate_portfolio should return one value per year
     path = simulate_portfolio(10000, 500, 30)
     assert len(path) == 30
     # Final portfolio value should be positive
     assert path[-1] > 0
 
-    # Step 3 tests
     all_paths = run_simulations(10000, 500, 30, 1000)
     # We should have 1000 simulations, each with 30 yearly values
     assert len(all_paths) == 1000
     assert len(all_paths[0]) == 30
 
-    # Step 4 tests
     results = analyze_results(all_paths, 1000000)
     # should be one band per year
     assert len(results["year_bands"]) == 30
@@ -267,7 +260,6 @@ def demo():
         print(f"Year {i}: " + "  ".join(f"{r*100:+.1f}%" for r in months))
         print(f"        Annual Return: {annual*100:+.1f}%\n")
 
-    # Step 5 User input
     print("Enter your own portfolio investment details")
     initial_value = float(input("Starting portfolio value: $"))
     monthly_contribution = float(input("Monthly contribution: $"))
@@ -283,15 +275,8 @@ def demo():
         print(f"Year {i+1:>2}: ${value:>12,.2f}")
 
 
-    # Step 2 demo
-    # Show a full portfolio simulation over 10 years
-    #print("One portfolio simulation ($10,000 start, $500/month, 10 years)")
-    #random.seed(99)
-    #path = simulate_portfolio(10000, 500, 10)
-    #for i, value in enumerate(path):
-        #print(f"Year {i+1:>2}: ${value:>12,.2f}")
 
-    # Step 3/5 demo
+
     print(f"\nRunning 1,000 simulations (${initial_value:,.0f} start, ${monthly_contribution:,.0f}/month, {years} years)")
     #print("\nRunning 1,000 simulations ($10,000 start, $500/month, 30 years)")
     all_paths = run_simulations(initial_value, monthly_contribution, years, 1000)
@@ -300,7 +285,6 @@ def demo():
     print(f"Lowest final value: ${min(final_values):,.2f}")
     print(f"Highest final value: ${max(final_values):,.2f}")
 
-    # Step 4/5 demo
     print(f"\nPercentile bands by year (${target_goal:,.0f} target goal)")
     #print("\nPercentile bands by year ($1,000,000 target goal)")
     results = analyze_results(all_paths, target_goal)
@@ -312,7 +296,6 @@ def demo():
     print(f"\nProbability of reaching ${target_goal:,.0f} in {years} years: {results['probability_of_success']}%")
     #print(f"\nProbability of reaching $1,000,000 in 30 years: {results['probability_of_success']}%")
 
-    # Step 6 demo
     # Plot the results
     plot_results(results, target_goal, years)
 

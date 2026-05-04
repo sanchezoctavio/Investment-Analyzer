@@ -129,7 +129,9 @@ def run_scenario(s):
     )
     return analyze_results(paths, s["target_goal"])
 
-
+# Combine the user's inputs and the simulation results into a single
+# dictionary ready to hand off to the HTML template (and to the
+# Chart.js JavaScript on the page).
 def build_scenario_payload(s, results):
     """Combine inputs + results into a serializable payload for the template."""
     return {
